@@ -3,6 +3,7 @@ package net.ansol.tipsycraft.block
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.Fertilizable
+import net.minecraft.block.ShapeContext
 import net.minecraft.block.piston.PistonBehavior
 import net.minecraft.item.Item
 import net.minecraft.item.ItemPlacementContext
@@ -16,6 +17,8 @@ import net.minecraft.state.property.Properties
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.random.Random
+import net.minecraft.util.shape.VoxelShape
+import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import net.minecraft.world.WorldAccess
 import net.minecraft.world.WorldView
@@ -54,6 +57,22 @@ abstract class HopsVineBlockBase(settings: Settings) :
         val AGE: IntProperty = Properties.AGE_3
         val VIGOR: IntProperty = IntProperty.of("vigor", 0, MAX_VIGOR)
         val FACING: EnumProperty<Direction> = Properties.HORIZONTAL_FACING
+
+        const val MAX_AGE = 3
+
+        val RIPE_OUTLINE_SHAPES: Map<Direction, VoxelShape> = mapOf(
+            Direction.EAST to createCuboidShape(0.0, 0.0, 0.0, 3.0, 16.0, 16.0),
+            Direction.WEST to createCuboidShape(13.0, 0.0, 0.0, 16.0, 16.0, 16.0),
+            Direction.SOUTH to createCuboidShape(0.0, 0.0, 0.0, 16.0, 16.0, 3.0),
+            Direction.NORTH to createCuboidShape(0.0, 0.0, 13.0, 16.0, 16.0, 16.0)
+        )
+
+        val UNRIPE_OUTLINE_SHAPES: Map<Direction, VoxelShape> = mapOf(
+            Direction.EAST to createCuboidShape(0.0, 0.0, 0.0, 2.0, 16.0, 16.0),
+            Direction.WEST to createCuboidShape(14.0, 0.0, 0.0, 16.0, 16.0, 16.0),
+            Direction.SOUTH to createCuboidShape(0.0, 0.0, 0.0, 16.0, 16.0, 2.0),
+            Direction.NORTH to createCuboidShape(0.0, 0.0, 14.0, 16.0, 16.0, 16.0)
+        )
 
         private fun isSameVine(p1: BlockPos, p2: BlockPos, world: WorldView): Boolean {
             val b1 = world.getBlockState(p1)
@@ -123,6 +142,15 @@ abstract class HopsVineBlockBase(settings: Settings) :
         builder.add(AGE, FACING, VIGOR)
     }
 
+    override fun getOutlineShape(
+        state: BlockState,
+        world: BlockView,
+        pos: BlockPos,
+        context: ShapeContext
+    ): VoxelShape {
+        return if (state[AGE] < MAX_AGE) UNRIPE_OUTLINE_SHAPES[state[FACING]]!! else RIPE_OUTLINE_SHAPES[state[FACING]]!!
+    }
+
     override fun canPlaceAt(state: BlockState, world: WorldView, pos: BlockPos): Boolean {
         return isOnDirt(world, pos) && againstFullWall(world, pos, state[FACING])
     }
@@ -178,7 +206,7 @@ abstract class HopsVineBlockBase(settings: Settings) :
     }
 
     override fun randomTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: Random) {
-        if (state[AGE] < AGE.values.max() && random.nextFloat() < spec.ageTickChance) {
+        if (state[AGE] < MAX_AGE && random.nextFloat() < spec.ageTickChance) {
             world.setBlockState(pos, state.with(AGE, state[AGE] + 1), NOTIFY_LISTENERS)
         }
 
@@ -249,7 +277,7 @@ abstract class HopsVineBlockBase(settings: Settings) :
     }
 
     override fun isFertilizable(world: WorldView, pos: BlockPos, state: BlockState): Boolean {
-        val canAge = state[AGE] < AGE.values.max()
+        val canAge = state[AGE] < MAX_AGE
         val canSpread = state[VIGOR] > 0 && getPossibleSpreadPositions(state, world, pos).isNotEmpty()
         return canAge || canSpread
     }
@@ -257,8 +285,8 @@ abstract class HopsVineBlockBase(settings: Settings) :
     override fun canGrow(world: World, random: Random, pos: BlockPos, state: BlockState): Boolean = true
 
     override fun grow(world: ServerWorld, random: Random, pos: BlockPos, state: BlockState) {
-        if (state[AGE] < AGE.values.max()) {
-            val newAge = (state[AGE] + 1 + random.nextInt(3)).coerceAtMost(AGE.values.max())
+        if (state[AGE] < MAX_AGE) {
+            val newAge = (state[AGE] + 1 + random.nextInt(3)).coerceAtMost(MAX_AGE)
             world.setBlockState(pos, state.with(AGE, newAge), NOTIFY_LISTENERS)
         }
 
