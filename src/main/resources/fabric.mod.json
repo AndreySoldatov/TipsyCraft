@@ -1,0 +1,44 @@
+{
+	"schemaVersion": 1,
+	"id": "tipsycraft",
+	"version": "${version}",
+	"name": "Tipsy Craft",
+	"description": "Booze making mod for minecraft!",
+	"authors": [
+		"Andrey Soldatov"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/tipsycraft/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			{
+				"value": "net.ansol.tipsycraft.TipsyCraft",
+				"adapter": "kotlin"
+			}
+		],
+		"fabric-datagen": [
+			{
+				"value": "net.ansol.tipsycraft.TipsyCraftDataGenerator",
+				"adapter": "kotlin"
+			}
+		]
+	},
+	"mixins": [
+		"tipsycraft.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.17.3",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*",
+		"fabric-language-kotlin": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

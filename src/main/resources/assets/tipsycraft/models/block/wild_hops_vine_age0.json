@@ -1,0 +1,18 @@
+{
+    "ambientocclusion": false,
+    "textures": {
+        "particle": "tipsycraft:block/wild_hops_vine_age0",
+        "vine": "tipsycraft:block/wild_hops_vine_age0"
+    },
+    "elements": [
+        {
+            "from": [ 0, 0, 1 ],
+            "to": [ 16, 16, 1 ],
+            "shade": false,
+            "faces": {
+                "north": { "uv": [ 16, 0, 0, 16 ], "texture": "#vine", "tintindex": 0 },
+                "south": { "uv": [ 0, 0, 16, 16 ], "texture": "#vine", "tintindex": 0 }
+            }
+        }
+    ]
+}
