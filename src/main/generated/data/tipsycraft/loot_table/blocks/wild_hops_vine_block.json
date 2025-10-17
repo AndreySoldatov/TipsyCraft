@@ -10,53 +10,41 @@
       "bonus_rolls": 0.0,
       "entries": [
         {
-          "type": "minecraft:alternatives",
-          "children": [
+          "type": "minecraft:item",
+          "conditions": [
             {
-              "type": "minecraft:item",
-              "conditions": [
-                {
-                  "block": "tipsycraft:wild_hops_vine_block",
-                  "condition": "minecraft:block_state_property",
-                  "properties": {
-                    "age": "3"
-                  }
-                }
-              ],
-              "name": "tipsycraft:wild_hops_flowers"
-            },
-            {
-              "type": "minecraft:item",
-              "name": "tipsycraft:wild_hops_seeds"
+              "block": "tipsycraft:wild_hops_vine_block",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "age": "3"
+              }
             }
-          ]
+          ],
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 3.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "tipsycraft:wild_hops_flowers"
         }
       ],
       "rolls": 1.0
     },
     {
       "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "block": "tipsycraft:wild_hops_vine_block",
-          "condition": "minecraft:block_state_property",
-          "properties": {
-            "age": "3"
-          }
-        }
-      ],
       "entries": [
         {
           "type": "minecraft:item",
-          "functions": [
+          "conditions": [
             {
-              "enchantment": "minecraft:fortune",
-              "formula": "minecraft:binomial_with_bonus_count",
-              "function": "minecraft:apply_bonus",
-              "parameters": {
-                "extra": 3,
-                "probability": 0.5714286
-              }
+              "chance": 0.3,
+              "condition": "minecraft:random_chance"
             }
           ],
           "name": "tipsycraft:wild_hops_seeds"

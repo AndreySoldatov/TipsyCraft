@@ -5,15 +5,24 @@ import net.minecraft.block.BlockState
 import net.minecraft.block.Fertilizable
 import net.minecraft.block.ShapeContext
 import net.minecraft.block.piston.PistonBehavior
+import net.minecraft.entity.EquipmentSlot
+import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemPlacementContext
+import net.minecraft.item.ItemStack
+import net.minecraft.item.Items
 import net.minecraft.registry.tag.BlockTags
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.BlockSoundGroup
+import net.minecraft.sound.SoundCategory
+import net.minecraft.sound.SoundEvents
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.EnumProperty
 import net.minecraft.state.property.IntProperty
 import net.minecraft.state.property.Properties
+import net.minecraft.util.Hand
+import net.minecraft.util.ItemActionResult
+import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.random.Random
@@ -270,8 +279,8 @@ abstract class HopsVineBlockBase(settings: Settings) :
 
         world.playSound(
             null, targetPos,
-            net.minecraft.sound.SoundEvents.BLOCK_AZALEA_HIT,
-            net.minecraft.sound.SoundCategory.BLOCKS,
+            SoundEvents.BLOCK_AZALEA_HIT,
+            SoundCategory.BLOCKS,
             1.0f, 1.0f
         )
     }
@@ -295,5 +304,29 @@ abstract class HopsVineBlockBase(settings: Settings) :
                 trySpread(state, world, pos, random)
             }
         }
+    }
+
+    override fun onUseWithItem(
+        stack: ItemStack,
+        state: BlockState,
+        world: World,
+        pos: BlockPos,
+        player: PlayerEntity,
+        hand: Hand,
+        hit: BlockHitResult
+    ): ItemActionResult {
+        if (world.isClient) return ItemActionResult.FAIL
+
+        if (stack.isOf(Items.SHEARS) && state[AGE] == MAX_AGE) {
+            stack.damage(1, player, EquipmentSlot.MAINHAND)
+
+            dropStacks(state, world, pos)
+
+            world.setBlockState(pos, state.with(AGE, 1), NOTIFY_LISTENERS)
+
+            world.playSound(null, pos, SoundEvents.ENTITY_SHEEP_SHEAR, SoundCategory.BLOCKS, 1.0f, 1.0f)
+
+            return ItemActionResult.SUCCESS
+        } else return ItemActionResult.FAIL
     }
 }
