@@ -1,12 +1,8 @@
 package net.ansol.tipsycraft.block
 
-import net.ansol.tipsycraft.TipsyCraft
-import net.minecraft.block.AbstractBlock
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
-import net.minecraft.block.Blocks
 import net.minecraft.block.Fertilizable
-import net.minecraft.block.MapColor
 import net.minecraft.block.piston.PistonBehavior
 import net.minecraft.item.Item
 import net.minecraft.item.ItemPlacementContext
@@ -24,7 +20,7 @@ import net.minecraft.world.World
 import net.minecraft.world.WorldAccess
 import net.minecraft.world.WorldView
 
-abstract class HopsVineBlockBase(settings: AbstractBlock.Settings) :
+abstract class HopsVineBlockBase(settings: Settings) :
     Block(settings
         .noCollision()
         .nonOpaque()
@@ -183,7 +179,7 @@ abstract class HopsVineBlockBase(settings: AbstractBlock.Settings) :
 
     override fun randomTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: Random) {
         if (state[AGE] < AGE.values.max() && random.nextFloat() < spec.ageTickChance) {
-            world.setBlockState(pos, state.with(AGE, state[AGE] + 1), Block.NOTIFY_LISTENERS)
+            world.setBlockState(pos, state.with(AGE, state[AGE] + 1), NOTIFY_LISTENERS)
         }
 
         if (state[VIGOR] > 0 && random.nextFloat() < spec.spreadChance) {
@@ -239,7 +235,7 @@ abstract class HopsVineBlockBase(settings: AbstractBlock.Settings) :
             .with(FACING, targetFacing)
             .with(AGE, 0)
             .with(VIGOR, state[VIGOR] - 1)
-        world.setBlockState(targetPos, child, Block.NOTIFY_ALL)
+        world.setBlockState(targetPos, child, NOTIFY_ALL)
 
         world.setBlockState(pos,
             state.with(VIGOR, state[VIGOR] - 1))
@@ -263,7 +259,7 @@ abstract class HopsVineBlockBase(settings: AbstractBlock.Settings) :
     override fun grow(world: ServerWorld, random: Random, pos: BlockPos, state: BlockState) {
         if (state[AGE] < AGE.values.max()) {
             val newAge = (state[AGE] + 1 + random.nextInt(3)).coerceAtMost(AGE.values.max())
-            world.setBlockState(pos, state.with(AGE, newAge), Block.NOTIFY_LISTENERS)
+            world.setBlockState(pos, state.with(AGE, newAge), NOTIFY_LISTENERS)
         }
 
         if (state[VIGOR] > 0) {

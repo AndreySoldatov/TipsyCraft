@@ -3,7 +3,6 @@ package net.ansol.tipsycraft.block
 import net.ansol.tipsycraft.TipsyCraft
 import net.ansol.tipsycraft.item.Items
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap
-import net.fabricmc.fabric.impl.blockrenderlayer.BlockRenderLayerMapImpl
 import net.minecraft.block.AbstractBlock
 import net.minecraft.block.Block
 import net.minecraft.client.render.RenderLayer

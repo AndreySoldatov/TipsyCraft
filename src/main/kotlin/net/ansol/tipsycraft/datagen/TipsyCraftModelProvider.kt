@@ -8,9 +8,7 @@ import net.minecraft.data.client.ItemModelGenerator
 import net.minecraft.data.client.Models
 
 class TipsyCraftModelProvider(output: FabricDataOutput) : FabricModelProvider(output) {
-    override fun generateBlockStateModels(p0: BlockStateModelGenerator) {
-//        TODO("Not yet implemented")
-    }
+    override fun generateBlockStateModels(p0: BlockStateModelGenerator) {}
 
     override fun generateItemModels(p0: ItemModelGenerator) {
         p0.register(Items.WILD_HOPS_FLOWERS, Models.GENERATED)
